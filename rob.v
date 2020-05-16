@@ -48,10 +48,10 @@ reg [139:0] rob [7:0];
 // Location of next instruction to commit (aka start of buffer)
 integer start_idx = 0;
 
-// Location to append next instruction (aka end of queue)
+// Location to append next instruction (aka end of the buffer)
 integer end_idx = 0;
 
-// Number of entries that are currently in the queue
+// Number of entries that are currently in the buffer
 integer counter = 0;
 
 // Concatenation of all metadata held in ROB 
@@ -72,7 +72,7 @@ always @(negedge clk) begin
 end
 
 always @(posedge clk) begin 
-    // Commit-handling code (if entry at start_idx is ready to commit and queue is not empty)
+    // Commit-handling code (if entry at start_idx is ready to commit and buffer is not empty)
     if (counter > 0 && rob[start_idx][139] == 1) begin
         rob_entry = rob[start_idx];
 
@@ -92,7 +92,7 @@ always @(posedge clk) begin
             commit_ready_reg = 1;
         end
 
-        // Reset start_idx when we reach the end of the queue
+        // Reset start_idx when we reach the end of the buffer
         if(start_idx == 7) begin
             start_idx = 0;
         end else begin
@@ -115,7 +115,7 @@ always @(posedge clk) begin
         counter = counter + 1;
         $display("counter: %d", counter);
 
-        // Reset end_idx when we reach the end of the queue
+        // Reset end_idx when we reach the end of the buffer
         if(end_idx == 7) begin
             end_idx = 0;
         end else begin
