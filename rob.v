@@ -124,9 +124,9 @@ always @(posedge clk) begin
         rob[data_entry][63:0] = Data_in;
     end
 
-    if(commit_ready) {
+    if(commit_ready) begin
         rob[data_entry][139] = 1;
-    }
+    end
 
     test = test + 1;
     end
