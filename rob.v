@@ -22,6 +22,7 @@ on commit check if idx = start idx (aka first entry in queue)
 */
 
 module rob (
+    input wire clk,
     input wire[3:0] MajorOpcode_in, // [138:135]
     input wire[4:0] Source1_in, // [134: 130]
     input wire[4:0] Source2_in, // [129:125]
@@ -59,6 +60,8 @@ integer counter = 0;
 
 // Concatenation of all metadata held in ROB 
 reg [139:0] rob_entry;
+
+reg ready = 0;
 
 reg is_memory_op;
 always @(negedge clk) begin 
@@ -102,7 +105,7 @@ always @(posedge clk) begin
 
     // Handle appending an ROB entry (only when we are not at capacity)
     if(counter != 8) begin
-        rob_entry = {0, MajorOpcode_in, Source1_in, Source2_in, OffsetScale_in, Destination_in, MinorOpcode_in, HasAddress_in, Address_in, OffsetSub_in};
+        rob_entry = {ready, MajorOpcode_in, Source1_in, Source2_in, OffsetScale_in, Destination_in, MinorOpcode_in, HasAddress_in, Address_in, OffsetSub_in};
         $display("rob_entry: %b", rob_entry);
 
         rob[end_idx] = rob_entry;
